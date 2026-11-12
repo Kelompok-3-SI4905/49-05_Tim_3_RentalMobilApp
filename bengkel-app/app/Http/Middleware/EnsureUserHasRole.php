@@ -17,10 +17,17 @@ class EnsureUserHasRole
     {
         $user = $request->user();
 
-        if (! $user || ! in_array($user->role, $roles, true)) {
+        // 1. Belum login? Arahkan ke halaman login
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        // 2. Sudah login, tapi perannya tidak ada di daftar? Tolak dengan 403
+        if (! $user->hasRole(...$roles)) {
             abort(403, 'Akses ditolak. Halaman ini khusus untuk Administrator.');
         }
 
+        // 3. Lolos: lanjut ke controller
         return $next($request);
     }
 }

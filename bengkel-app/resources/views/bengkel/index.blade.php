@@ -20,13 +20,13 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <!-- Tombol Tambah Bengkel (Hanya untuk Admin) -->
-                @if(auth()->user()->role === 'admin')
+                <!-- Tombol Tambah Bengkel (Menggunakan Gate 'manage-bengkel') -->
+                @can('manage-bengkel')
                     <a href="{{ route('bengkel.create') }}" 
                        class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition text-sm shadow-sm flex items-center gap-1">
                         + Tambah Bengkel
                     </a>
-                @endif
+                @endcan
 
                 <!-- Tombol Logout -->
                 <form action="{{ route('logout') }}" method="POST" class="inline">
@@ -62,10 +62,10 @@
                         <th class="px-4 py-3.5 tracking-wide border-r border-gray-200">ALAMAT</th>
                         <th class="px-4 py-3.5 tracking-wide border-r border-gray-200">NO. TELEPON</th>
                         <th class="px-4 py-3.5 tracking-wide border-r border-gray-200">JENIS LAYANAN</th>
-                        <!-- Kolom Aksi Hanya Muncul Jika Admin -->
-                        @if(auth()->user()->role === 'admin')
+                        <!-- Kolom Aksi Hanya Muncul Jika Lolos Gate 'manage-bengkel' -->
+                        @can('manage-bengkel')
                             <th class="px-4 py-3.5 text-center tracking-wide">AKSI</th>
-                        @endif
+                        @endcan
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -77,30 +77,35 @@
                             <td class="px-4 py-3 border-r border-gray-200">{{ $b->no_telp }}</td>
                             <td class="px-4 py-3 border-r border-gray-200">{{ $b->jenis_layanan }}</td>
                             
-                            <!-- Tombol Edit & Hapus (Hanya Muncul Jika Admin) -->
-                            @if(auth()->user()->role === 'admin')
+                            <!-- Tombol Edit & Hapus (Menggunakan Policy 'update' & 'delete' pada model $b) -->
+                            @canany(['update', 'delete'], $b)
                                 <td class="px-4 py-3 text-center">
                                     <div class="flex justify-center items-center gap-2">
-                                        <a href="{{ route('bengkel.edit', $b->id) }}" 
-                                           class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition">
-                                            Edit
-                                        </a>
-                                        <form action="{{ route('bengkel.destroy', $b->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
-                                                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition" 
-                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                                Hapus
-                                            </button>
-                                        </form>
+                                        @can('update', $b)
+                                            <a href="{{ route('bengkel.edit', $b) }}" 
+                                               class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition">
+                                                Edit
+                                            </a>
+                                        @endcan
+
+                                        @can('delete', $b)
+                                            <form action="{{ route('bengkel.destroy', $b) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" 
+                                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition" 
+                                                        onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
                                 </td>
-                            @endif
+                            @endcanany
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ auth()->user()->role === 'admin' ? 6 : 5 }}" class="text-center py-6 text-gray-400">
+                            <td colspan="{{ auth()->user()->can('manage-bengkel') ? 6 : 5 }}" class="text-center py-6 text-gray-400">
                                 Belum ada data bengkel mitra.
                             </td>
                         </tr>

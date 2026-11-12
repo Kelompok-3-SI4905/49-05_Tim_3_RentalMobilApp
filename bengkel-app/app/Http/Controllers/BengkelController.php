@@ -14,13 +14,13 @@ class BengkelController extends Controller
         return view('bengkel.index', compact('bengkels'));
     }
 
-    // 2. Menampilkan form untuk menambah bengkel (Khusus Admin - dijaga Middleware)
+    // 2. Menampilkan form untuk menambah bengkel (Khusus Admin - dijaga Middleware & Gate)
     public function create()
     {
         return view('bengkel.create');
     }
 
-    // 3. Menyimpan data bengkel baru ke database (Khusus Admin - dijaga Middleware)
+    // 3. Menyimpan data bengkel baru ke database (Khusus Admin - dijaga Middleware & Gate)
     public function store(Request $request)
     {
         $request->validate([
@@ -35,15 +35,14 @@ class BengkelController extends Controller
         return redirect()->route('bengkel.index')->with('success', 'Data bengkel berhasil ditambahkan!');
     }
 
-    // 4. Menampilkan form edit data bengkel (Khusus Admin - dijaga Middleware)
-    public function edit($id)
+    // 4. Menampilkan form edit data bengkel (Khusus Admin - dijaga Middleware & Policy)
+    public function edit(Bengkel $bengkel)
     {
-        $bengkel = Bengkel::findOrFail($id);
         return view('bengkel.edit', compact('bengkel'));
     }
 
-    // 5. Memperbarui data bengkel di database (Khusus Admin - dijaga Middleware)
-    public function update(Request $request, $id)
+    // 5. Memperbarui data bengkel di database (Khusus Admin - dijaga Middleware & Policy)
+    public function update(Request $request, Bengkel $bengkel)
     {
         $request->validate([
             'nama_bengkel'  => 'required',
@@ -52,16 +51,14 @@ class BengkelController extends Controller
             'jenis_layanan' => 'required',
         ]);
 
-        $bengkel = Bengkel::findOrFail($id);
         $bengkel->update($request->all());
 
         return redirect()->route('bengkel.index')->with('success', 'Data bengkel berhasil diperbarui!');
     }
 
-    // 6. Menghapus data bengkel yang ada (Khusus Admin - dijaga Middleware)
-    public function destroy($id)
+    // 6. Menghapus data bengkel yang ada (Khusus Admin - dijaga Middleware & Policy)
+    public function destroy(Bengkel $bengkel)
     {
-        $bengkel = Bengkel::findOrFail($id);
         $bengkel->delete();
 
         return redirect()->route('bengkel.index')->with('success', 'Data bengkel berhasil dihapus!');
