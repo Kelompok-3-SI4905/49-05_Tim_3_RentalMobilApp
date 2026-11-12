@@ -14,23 +14,15 @@ class BengkelController extends Controller
         return view('bengkel.index', compact('bengkels'));
     }
 
-    // 2. Menampilkan form untuk menambah bengkel (Khusus Admin)
+    // 2. Menampilkan form untuk menambah bengkel (Khusus Admin - dijaga Middleware)
     public function create()
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('bengkel.index')->with('error', 'Anda tidak memiliki akses untuk menambah data.');
-        }
-
         return view('bengkel.create');
     }
 
-    // 3. Menyimpan data bengkel baru ke database (Khusus Admin)
+    // 3. Menyimpan data bengkel baru ke database (Khusus Admin - dijaga Middleware)
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('bengkel.index')->with('error', 'Anda tidak memiliki akses untuk menambah data.');
-        }
-
         $request->validate([
             'nama_bengkel'  => 'required',
             'alamat'        => 'required',
@@ -43,24 +35,16 @@ class BengkelController extends Controller
         return redirect()->route('bengkel.index')->with('success', 'Data bengkel berhasil ditambahkan!');
     }
 
-    // 4. Menampilkan form edit data bengkel (Khusus Admin)
+    // 4. Menampilkan form edit data bengkel (Khusus Admin - dijaga Middleware)
     public function edit($id)
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('bengkel.index')->with('error', 'Anda tidak memiliki akses untuk mengedit data.');
-        }
-
         $bengkel = Bengkel::findOrFail($id);
         return view('bengkel.edit', compact('bengkel'));
     }
 
-    // 5. Memperbarui data bengkel di database (Khusus Admin)
+    // 5. Memperbarui data bengkel di database (Khusus Admin - dijaga Middleware)
     public function update(Request $request, $id)
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('bengkel.index')->with('error', 'Anda tidak memiliki akses untuk mengedit data.');
-        }
-
         $request->validate([
             'nama_bengkel'  => 'required',
             'alamat'        => 'required',
@@ -74,13 +58,9 @@ class BengkelController extends Controller
         return redirect()->route('bengkel.index')->with('success', 'Data bengkel berhasil diperbarui!');
     }
 
-    // 6. Menghapus data bengkel yang ada (Khusus Admin)
+    // 6. Menghapus data bengkel yang ada (Khusus Admin - dijaga Middleware)
     public function destroy($id)
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('bengkel.index')->with('error', 'Anda tidak memiliki akses untuk menghapus data.');
-        }
-
         $bengkel = Bengkel::findOrFail($id);
         $bengkel->delete();
 
