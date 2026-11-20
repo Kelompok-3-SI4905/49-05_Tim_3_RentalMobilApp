@@ -13,9 +13,11 @@
     <div class="container">
       <span class="navbar-brand fw-bold text-white">Armada Kendaraan</span>
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link text-white" href="{{ route('home') }}">Beranda</a>
-        </li>
+        @can('tambah-kendaraan')
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{ route('home') }}">Tambah Kendaraan</a>
+          </li>
+        @endcan
         <li class="nav-item">
           <a class="nav-link text-white" href="{{ route('kendaraan.daftar') }}">Daftar Kendaraan</a>
         </li>
@@ -47,11 +49,6 @@
             <div class="mb-3">
               <label for="password" class="form-label fw-semibold">Password</label>
               <input type="password" class="form-control" id="password" name="password" required placeholder="Masukkan password">
-            </div>
-
-            <div class="form-check mb-4">
-              <input class="form-check-input" type="checkbox" id="remember" name="remember">
-              <label class="form-check-label" for="remember">Ingat saya</label>
             </div>
 
             <button type="submit" class="btn btn-primary w-100 py-2">Masuk</button>

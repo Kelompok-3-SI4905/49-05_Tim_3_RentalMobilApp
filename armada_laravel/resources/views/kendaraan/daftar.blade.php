@@ -15,9 +15,11 @@
         <div class="container">
             <a class="navbar-brand fw-bold text-white" href="{{ route('home') }}">Armada Kendaraan</a>
             <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{{ route('home') }}">Beranda</a>
-                </li>
+                @can('tambah-kendaraan')
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('home') }}">Tambah Kendaraan</a>
+                    </li>
+                @endcan
                 <li class="nav-item">
                     <a class="nav-link active text-white" href="{{ route('kendaraan.daftar') }}">Daftar Kendaraan</a>
                 </li>
@@ -25,7 +27,8 @@
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
                             @csrf
-                            <button type="submit" class="btn nav-link text-white">Logout ({{ Auth::user()->username }})</button>
+                            <button type="submit" class="btn nav-link text-white">Logout
+                                ({{ Auth::user()->username }})</button>
                         </form>
                     </li>
                 @else
@@ -74,20 +77,26 @@
                                 </td>
                                 @auth
                                     <td class="text-center">
-                                        <a href="{{ route('kendaraan.edit', $item) }}"
-                                            class="btn btn-sm btn-warning me-1">Edit</a>
-                                        <form action="{{ route('kendaraan.destroy', $item) }}" method="POST" class="d-inline"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus kendaraan ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                                        </form>
+                                        @can('update', $item)
+                                            <a href="{{ route('kendaraan.edit', $item) }}"
+                                                class="btn btn-sm btn-warning me-1">Edit</a>
+                                        @endcan
+
+                                        @can('delete', $item)
+                                            <form action="{{ route('kendaraan.destroy', $item) }}" method="POST" class="d-inline"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus kendaraan ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                            </form>
+                                        @endcan
                                     </td>
                                 @endauth
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ Auth::check() ? 6 : 5 }}" class="text-center text-muted py-4">Belum ada data kendaraan.</td>
+                                <td colspan="{{ Auth::check() ? 6 : 5 }}" class="text-center text-muted py-4">Belum ada data
+                                    kendaraan.</td>
                             </tr>
                         @endforelse
                     </tbody>

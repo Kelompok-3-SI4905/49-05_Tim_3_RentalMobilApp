@@ -26,4 +26,26 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function hasRole(string ...$roles): bool
+    {
+        $currentRole = strtolower(trim((string) $this->role));
+
+        // Toleransi jika role di database tertulis 'adminkendaraan'
+        if ($currentRole === 'adminkendaraan') {
+            $currentRole = 'admin';
+        }
+
+        $flatRoles = [];
+        foreach ($roles as $role) {
+            foreach (explode(',', $role) as $r) {
+                $trimmed = strtolower(trim($r));
+                if ($trimmed !== '') {
+                    $flatRoles[] = $trimmed;
+                }
+            }
+        }
+
+        return in_array($currentRole, $flatRoles, true);
+    }
 }

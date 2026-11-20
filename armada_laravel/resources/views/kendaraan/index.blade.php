@@ -15,9 +15,11 @@
         <div class="container">
             <a class="navbar-brand fw-bold text-white" href="{{ route('home') }}">Armada Kendaraan</a>
             <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item">
-                    <a class="nav-link active text-white" href="{{ route('home') }}">Beranda</a>
-                </li>
+                @can('tambah-kendaraan')
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" href="{{ route('home') }}">Tambah Kendaraan</a>
+                    </li>
+                @endcan
                 <li class="nav-item">
                     <a class="nav-link text-white" href="{{ route('kendaraan.daftar') }}">Daftar Kendaraan</a>
                 </li>

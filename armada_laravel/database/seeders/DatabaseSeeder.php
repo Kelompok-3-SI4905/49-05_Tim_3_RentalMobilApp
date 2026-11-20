@@ -14,7 +14,15 @@ class DatabaseSeeder extends Seeder
             ['username' => 'admin'],
             [
                 'password' => Hash::make('admin123'),
-                'role' => 'adminkendaraan',
+                'role' => 'admin',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['username' => 'petugas'],
+            [
+                'password' => Hash::make('petugas123'),
+                'role' => 'petugas',
             ]
         );
     }
